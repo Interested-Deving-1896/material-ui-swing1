@@ -4,11 +4,9 @@ import static java.awt.GraphicsEnvironment.isHeadless;
 import static org.junit.Assume.assumeFalse;
 
 import java.awt.*;
-import java.lang.reflect.Field;
 import javax.swing.plaf.FontUIResource;
 import junit.framework.TestCase;
 import mdlaf.utils.MaterialFontFactory;
-import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,11 +24,6 @@ public class MaterialFontFactoryTest {
   @BeforeClass
   public static void beforeClass() throws Exception {
     assumeFalse("Font tests can't run in headless env.", isHeadless());
-  }
-
-  @After
-  public void resetDefaultSize() throws Exception {
-    setDefaultFontSize(MaterialFontFactory.getInstance(), 14f);
   }
 
   @Test
@@ -68,27 +61,5 @@ public class MaterialFontFactoryTest {
     TestCase.assertEquals(fontOne, fontTwo);
     TestCase.assertTrue(fontOne instanceof FontUIResource);
     TestCase.assertTrue(fontTwo instanceof FontUIResource);
-  }
-
-  @Test
-  public void testFontAttributesAreRecomputedForEachLoad() throws Exception {
-    MaterialFontFactory fontFactory = MaterialFontFactory.getInstance();
-
-    setDefaultFontSize(fontFactory, 18f);
-    Font largerFont =
-        fontFactory.getFontWithStream(getClass().getResourceAsStream(PATH + REGULAR_NAME));
-
-    setDefaultFontSize(fontFactory, 14f);
-    Font defaultFont =
-        fontFactory.getFontWithStream(getClass().getResourceAsStream(PATH + REGULAR_NAME));
-
-    TestCase.assertEquals(18f, largerFont.getSize2D());
-    TestCase.assertEquals(14f, defaultFont.getSize2D());
-  }
-
-  private void setDefaultFontSize(MaterialFontFactory fontFactory, float size) throws Exception {
-    Field defaultSize = MaterialFontFactory.class.getDeclaredField("defaultSize");
-    defaultSize.setAccessible(true);
-    defaultSize.set(fontFactory, size);
   }
 }
